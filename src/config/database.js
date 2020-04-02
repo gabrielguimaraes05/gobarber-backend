@@ -1,8 +1,9 @@
 require('dotenv/config');
 
-module.exports = {
+const config = {
   dialect: 'postgres',
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST.split(':')[0],
+  port: Number.parseInt(process.env.DB_HOST.split(':')[1]),
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
@@ -12,3 +13,10 @@ module.exports = {
     underscoredAll: true,
   },
 };
+
+module.exports = {
+  ...config,
+  development: config,
+  production: config,
+  test: config,
+}
