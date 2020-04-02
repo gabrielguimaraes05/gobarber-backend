@@ -10,10 +10,19 @@ class Database {
     this.init();
   }
 
-  init() {
+  async init() {
     this.connection = new Sequelize(databaseConfig);
 
+    try {
+      await this.connection.authenticate();
+      console.log('Connection has been established successfully.');
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+    }
+
     models.map(model => model.init(this.connection));
+
+
   }
 }
 
