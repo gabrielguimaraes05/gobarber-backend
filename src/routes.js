@@ -6,6 +6,9 @@ import sessionController from './app/controllers/SessionControllers';
 
 const routes = new Router();
 
+routes.get('/', (req, res) => {
+  res.json({ response: 'UP' });
+});
 routes.post('/users', userController.store);
 routes.post('/sessions', sessionController.store);
 

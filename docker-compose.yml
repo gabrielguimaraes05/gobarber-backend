@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:11.2-alpine
+    ports:
+      - "5433:5432"
+    env_file: .env
+    environment:
+      - POSTGRES_PASSWORD=docker
+
+  migrate:
+    build: .
+    entrypoint: node_modules/.bin/sequelize db:migrate --config src/config/database.js --migrations-path src/database/migrations/
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+  app:
+    build: .
+    entrypoint: node_modules/.bin/nodemon src/server.js
+    ports:
+      - "3333:3333"
+    env_file: .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - migrate
+      - postgres
+    links:
+      - migrate
+      - postgres
